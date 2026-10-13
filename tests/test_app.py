@@ -9,7 +9,7 @@ def test_home_endpoint():
 
     data = response.get_json()
     assert data["application"] == "AI-Powered CloudOps Platform"
-    assert data["status"] == "running"
+    assert data["status"] == "failed"
 
 
 def test_health_endpoint():
