@@ -35,3 +35,26 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t cloudops-app:ci .
+
+      - name: Run Docker container
+        run: docker run -d --name cloudops-test -p 5001:5000 cloudops-app:ci
+
+      - name: Test container health endpoint
+        run: |
+          for i in {1..10}; do
+            if curl --fail http://localhost:5001/health; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "Container health check failed"
+          docker logs cloudops-test
+          exit 1
+
+      - name: Show container logs
+        if: always()
+        run: docker logs cloudops-test
+
+      - name: Clean up container
+        if: always()
+        run: docker rm -f cloudops-test
